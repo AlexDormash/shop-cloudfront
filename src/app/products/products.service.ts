@@ -53,8 +53,8 @@ export class ProductsService extends ApiService {
     const headers = this.getHeaders();
     const url = this.getUrl('product', 'getProductById');
     return this.http
-      .post<{ product: Product }>(url, { id }, { headers })
-      .pipe(map((resp) => resp.product));
+      .post<{ response: Product }>(url, { id }, { headers })
+      .pipe(map((resp) => resp.response));
   }
 
   getProducts(): Observable<Product[]> {
@@ -71,7 +71,7 @@ export class ProductsService extends ApiService {
       .get<any>(url, {
         headers,
       })
-      .pipe(map((response) => response.request));
+      .pipe(map((response) => response.response));
   }
 
   getProductsForCheckout(ids: string[]): Observable<Product[]> {
