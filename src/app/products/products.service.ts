@@ -37,7 +37,7 @@ export class ProductsService extends ApiService {
   }
 
   getProductById(id: string): Observable<Product | null> {
-    if (!this.endpointEnabled('bff')) {
+    if (!this.endpointEnabled('product')) {
       console.warn(
         'Endpoint "bff" is disabled. To enable change your environment.ts config'
       );
@@ -50,9 +50,10 @@ export class ProductsService extends ApiService {
         );
     }
 
-    const url = this.getUrl('bff', `products/${id}`);
+    const headers = this.getHeaders();
+    const url = this.getUrl('product', 'getProductById');
     return this.http
-      .get<{ product: Product }>(url)
+      .post<{ product: Product }>(url, { id }, { headers })
       .pipe(map((resp) => resp.product));
   }
 
@@ -63,13 +64,14 @@ export class ProductsService extends ApiService {
       );
       return this.http.get<Product[]>('/assets/products.json');
     }
-    const headers = new HttpHeaders()
-      .set('content-type', 'application/json')
-      .set('Access-Control-Allow-Origin', '*');
+
+    const headers = this.getHeaders();
     const url = this.getUrl('product', 'getProductList');
-    return this.http.get<Product[]>(url, {
-      headers,
-    });
+    return this.http
+      .get<any>(url, {
+        headers,
+      })
+      .pipe(map((response) => response.request));
   }
 
   getProductsForCheckout(ids: string[]): Observable<Product[]> {
@@ -80,5 +82,14 @@ export class ProductsService extends ApiService {
     return this.getProducts().pipe(
       map((products) => products.filter((product) => ids.includes(product.id)))
     );
+  }
+
+  getHeaders() {
+    const headers = new HttpHeaders();
+    headers
+      .set('content-type', 'application/json')
+      .set('Access-Control-Allow-Origin', '*')
+      .set('Access-Control-Allow-Credentials', 'true');
+    return headers;
   }
 }
