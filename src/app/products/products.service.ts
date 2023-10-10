@@ -51,9 +51,9 @@ export class ProductsService extends ApiService {
     }
 
     const headers = this.getHeaders();
-    const url = this.getUrl('product', 'getProductById');
+    const url = this.getUrl('product', `product/${id}`);
     return this.http
-      .post<{ response: Product }>(url, { id }, { headers })
+      .get<{ response: Product }>(url, { headers })
       .pipe(map((resp) => resp.response));
   }
 
@@ -66,7 +66,7 @@ export class ProductsService extends ApiService {
     }
 
     const headers = this.getHeaders();
-    const url = this.getUrl('product', 'getProductList');
+    const url = this.getUrl('product', 'product');
     return this.http
       .get<any>(url, {
         headers,
